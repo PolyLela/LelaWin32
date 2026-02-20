@@ -34,6 +34,19 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int) {
         return 0;
     }
 
+    HWND hSwitch = CreateWindowExA(
+        0,
+        "BUTTON",
+        "Enable This Feature",
+        WS_VISIBLE | WS_CHILD | BS_AUTOCHECKBOX,
+        200, 200,
+        100, 100,
+        hWnd,
+        (HMENU)1002,
+        hInstance,
+        NULL
+    );
+
     ShowWindow(hWnd, SW_SHOW);
 
     MSG msg;
@@ -51,6 +64,17 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
             PostQuitMessage(0);
             return 0;
         }
+        case WM_COMMAND : {
+            if (LOWORD(wParam) == 1002) {
+                LRESULT checked = SendMessage((HWND)lParam, BM_GETCHECK, 0, 0);
+
+                if (checked == BST_CHECKED)
+                    MessageBoxA(NULL, "Feature Enabled.", "Information", MB_ICONINFORMATION);
+                else
+                    MessageBoxA(NULL, "Feature Disabled.", "Information", MB_ICONINFORMATION);
+            }
+        }
+        
     }
     return DefWindowProc(hWnd, uMsg, wParam, lParam);
 }
